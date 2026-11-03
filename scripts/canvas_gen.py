@@ -9,7 +9,7 @@
 import json, os, sys, time, urllib.error, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from chj import Canvas, call, edge, result_media  # noqa: E402
+from chj import Canvas, call, edge, free_spot, result_media  # noqa: E402
 from canvas_setup import load_project, music_problems, save_state  # noqa: E402
 
 
@@ -40,6 +40,7 @@ def main():
     # 1. 补建候选节点（复制主节点草稿和连线，连线顺序不变）
     def ops_dup(payload):
         ids = {x["id"]: x for x in payload["nodes"]}
+        placed = list(payload["nodes"])
         ops = []
         for j in jobs:
             src = ids["gen_" + j]
@@ -51,8 +52,10 @@ def main():
                 for key in ("generation", "asset"):
                     dd.pop(key, None)
                 dd["label"] = proj["jobs"][j]["label"] + f" v{k}"
-                ops.append({"type": "add_node", "node": {"id": c, "type": src["type"],
-                            "position": {"x": src["position"]["x"] + 450 * (int(k) - 1), "y": src["position"]["y"]}, "data": dd}})
+                pos = free_spot(placed, src["position"]["x"] + 450 * (int(k) - 1), src["position"]["y"])
+                node = {"id": c, "type": src["type"], "position": pos, "data": dd}
+                placed.append(node)
+                ops.append({"type": "add_node", "node": node})
                 for e in payload["edges"]:
                     if e["target"] == src["id"]:
                         ops.append(edge(e["source"], c, f"{e['id']}__{c}"))

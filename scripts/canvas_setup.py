@@ -7,7 +7,7 @@
 import json, os, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from chj import Canvas, edge, media_size, upload  # noqa: E402
+from chj import Canvas, edge, free_spot, media_size, upload  # noqa: E402
 
 
 def load_project(d):
@@ -82,6 +82,7 @@ def main():
     def ops_for(payload):
         ids = {n["id"]: n for n in payload["nodes"]}
         eids = {e["id"] for e in payload["edges"]}
+        placed = list(payload["nodes"])
         ops = []
         for rid, (b, k, w, h, dur, i) in uploads.items():
             if rid in ids:
@@ -96,9 +97,11 @@ def main():
         for j, (name, job) in enumerate(jobs.items()):
             nid = "gen_" + name
             if nid not in ids:
-                ops.append({"type": "add_node", "node": {"id": nid, "type": job["kind"],
-                            "position": {"x": 800 + 450 * (j % 8), "y": 900 * (j // 8)},
-                            "data": {"type": job["kind"], "label": job["label"], "generationDraft": draft(job)}}})
+                data = {"type": job["kind"], "label": job["label"], "generationDraft": draft(job)}
+                box = (720, 450) if job.get("ratio") == "16:9" else (420, 820)
+                node = {"id": nid, "type": job["kind"], "position": free_spot(placed, 900 + 450 * (j % 8), 1000 * (j // 8), box), "data": data}
+                placed.append(node)
+                ops.append({"type": "add_node", "node": node})
             elif sync and (ids[nid]["data"].get("generationDraft") or {}).get("prompt") != job["prompt"]:
                 ops.append({"type": "update_node", "node_id": nid, "patch": {"data": {"generationDraft": {"prompt": job["prompt"]}}}})
             for k, r in enumerate(job.get("refs", []), 1):

@@ -120,6 +120,34 @@ class Canvas:
         return {(it.get("task_id") or it.get("id")): it for it in items}
 
 
+def _box(n):
+    """节点占位估算：横图更宽更矮。"""
+    d = n.get("data", {})
+    w, h = d.get("width") or 0, d.get("height") or 0
+    if not (w and h):
+        a = (d.get("asset") or {})
+        w, h = a.get("width") or 0, a.get("height") or 0
+    if not (w and h):
+        r = ((d.get("generationDraft") or {}).get("ratio") or (d.get("generationDraft") or {}).get("aspectRatio") or "9:16")
+        w, h = (16, 9) if r == "16:9" else (1, 1) if r == "1:1" else (9, 16)
+    return (720, 450) if w > h * 1.2 else (420, 820)
+
+
+def free_spot(nodes, x, y, new_box=(420, 820), step=450):
+    """从 (x, y) 往右找一个不和已有节点重叠的位置（2026-10-28：候选节点曾叠在相邻节点上）。
+    nodes 为画布节点列表；本轮新加的节点也要追加进去再找下一个。"""
+    def hit(px):
+        for n in nodes:
+            nx, ny = n["position"]["x"], n["position"]["y"]
+            bw, bh = _box(n)
+            if px < nx + bw and nx < px + new_box[0] and y < ny + bh and ny < y + new_box[1]:
+                return True
+        return False
+    while hit(x):
+        x += step
+    return {"x": x, "y": y}
+
+
 def edge(src, dst, eid=None):
     return {"type": "add_edge", "edge": {"id": eid or f"e_{src}_{dst}", "source": src, "target": dst, "type": "dashed",
             "sourceHandle": "context-source-anchor-right", "targetHandle": "context-target-anchor-left"}}
