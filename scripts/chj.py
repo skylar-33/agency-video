@@ -1,4 +1,4 @@
-"""出海匠开放平台 + 画布的共用客户端（餐馆剧情 skill 的所有脚本都用它）。
+"""出海匠开放平台 + 画布的共用客户端（代运营视频 skill 的出海匠脚本都用它；Brigo·EI 画布不走这些脚本）。
 
 - 凭据：~/.config/chj-short-drama-video/chj.env 里的 CHJ_OPENAPI_KEY，不打印。
 - 网关：https://openapi.gateway.chuhaijiang.com，请求头 X-API-Key；限流 10 次/分钟，连续调用间隔 ≥7 秒。

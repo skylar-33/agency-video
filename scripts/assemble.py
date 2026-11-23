@@ -6,7 +6,7 @@ timeline.json 里路径相对于该文件所在目录。段落类型：
   {"type":"rewind","src":"视频/a.mp4","end":8.6,"dur":0.6}                 倒带：src 的 0–end 倒放压到 dur 秒，加噪点和倒带声
   {"type":"title","text":"Take two.","dur":0.4}                            黑底白字标题卡
   {"type":"endcard","dur":0.5,"bg":"0x00913A","logo":"参考素材/logo_white.png"}
-     尾板最好不用；要留只闪一下，不写网址/按钮（见 prompt-rules.md 第四节）。lines、button 字段仍支持
+     尾板最好不用；要留只闪一下，不写网址/按钮（见 brands/<品牌>/brand.md）。lines、button 字段仍支持
 顶层: {"output":"视频/xxx.mp4","loudness":-14,"segments":[...]}
 """
 import json, os, subprocess, sys, tempfile

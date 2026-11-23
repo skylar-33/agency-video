@@ -1,4 +1,4 @@
-# 外壳规则：提示词框架、时长、配乐判断、品牌念法
+# 外壳规则：提示词框架、时长、配乐判断、品牌露出
 
 这里只管「格式和约束」——陈尚宇在 V07、P04 上实测确认过的。**框里填什么（光影、镜头、表演、衔接、声音、产品动作）按 `routing.md` 指向的外部原文写**，不在这里重复。
 
@@ -59,41 +59,27 @@
 - 转折点放在上一段的结束重音上（如胜利和弦），后期硬切。
 - 音乐的具体写法（功能、BPM、乐器、入口由看得见的事件触发）按 DirectorSKILL `sound-and-dialogue.md`。
 
-## 四、品牌露出与 CTA（2026-10-23 陈尚宇定）
+## 四、品牌露出、念法与 CTA（按品牌配置）
 
-- **剧情里提品牌只说品牌名，不说网址**：台词、字幕、道具上都不出现 naturestaurant.com / dot com。
-- **结尾 CTA 不说品牌名**：改成引导关注主页，如 `"Follow for more."`、`"Hit follow — part two's on my page."`、`"Check my profile."`；画面字幕同理，不写品牌名和网址。
-- **结尾品牌尾板最好不要**；一定要留，只闪一下（≤0.5 秒），不做停留的 logo 板、按钮、网址。
-- P04 的 `"Grab a case at Nature-stawrant dot com."` 和带网址按钮的尾板是旧做法，新片不再照搬。
+品牌名怎么念、台词里怎么写、CTA 说什么、要不要尾板、网址能不能出现——**全部以 `brands/<品牌>/brand.md` 为准**。通用经验：
+- Seedance 不听括号里的读音提示；品牌词念不准时，台词里直接写模型容易念对的写法，或把品牌词改成画外配音 / 字幕，不赌模型念对。
+- 品牌台词尽量 ≤6 个词、能看见嘴时用近景；生成后把品牌词单独切出来转写（`review.py --brand <片段>`），整句转写不可信，最终人耳确认。
+- 念错只补拍说品牌名的那一镜（挂原视频作视频1），替换那几秒。
+- AI 视频里不生成要读的字（价格、优惠、网址、贴纸），统一后期加。
 
-## 五、品牌名念法
-
-**定调（2026-10-28 陈尚宇定，同日改）：品牌名口播按 "nature restaurant" 念，提示词台词里写 `Nature-restaurant`。**
-- 改的原因：`Nature-stawrant` 拼读在 C1 VA / VA3 四个候选里全错（Natural shot it / Natural stutter / Natural starter），模型念 "nature restaurant" 最稳。
-- 审片时听起来是 "nature restaurant" 就算对；"natural ……" 之类算错。
-- 念错就只补拍说品牌名的那一镜（挂原视频作视频1 保证音色和光线一致），替换原片那几秒，别的不动；有 ElevenLabs 时也可以只替换品牌词音频。
-- 下面的 Nature-stawrant 拼读记录是旧做法，留作历史。
-
-- Seedance 不听括号里的读音提示：P04 CTA 前两批 6 个候选单独切词转写全是 "nature restaurant"，后面跟 ".com" 时更会拆成两个词。
-- **台词原文直接写拼读**：如 `"Nature-stawrant? Never again."`（只念品牌名，不带网址，见第四节）；屏幕上的正确拼写交给字幕。
-- 生成后 `review.py --brand natur` 把品牌词单独切出来转写，整句转写不可信；最终人耳确认，念法以客户确认为准。
-- 品牌台词尽量 ≤6 个词、能看见嘴时用近景；超长拆两镜或改画外。
-- 拼读不是稳定解（V02 2026-10-23）：同样写 "Nature-stawrant dot com" 3 条全错（nature star it / matristostorant），改成单独成句 "Nature-stawrant." + 停半拍 "Dot com." 再 1 条仍错。品牌词默认按画外处理：人物台词停在品牌词之前，品牌词放到官网录屏或尾板上用配音 / 字幕，不赌模型念对。
-
-## 六、图片提示词框架（GPT-Image-2，英文）
+## 五、图片提示词框架（GPT-Image-2，英文）
 
 顺序：景别和机位 → 角色身份描述（设定表里那句英文，逐字复制）→ 动作 → 光 → 构图留白 → 场景级风格尾句（逐字粘贴）→ 排除项。具体写法按 DirectorSKILL `keyframe-prompt-template.md`、`lighting-and-color.md`。
 
 项目硬规则：
-- 角色挂模特库三视图锁脸：`face, skin tone, age … must exactly match reference image 1. Do not lighten her skin`；只从服装参考里取服装，写明 `do not copy that person's face`。
-- 要读的字不让 AI 生成；logo 用参考图并逐字母写拼写 N-a-t-u-r-e-s-t-a-u-r-a-n-t，出图后放大核对。
+- 品牌有模特库时（见 brand.md），角色挂模特三视图锁脸：`face, skin tone, age … must exactly match reference image 1. Do not lighten her skin`；只从服装参考里取服装，写明 `do not copy that person's face`。
+- 要读的字不让 AI 生成；logo 用参考图并逐字母写拼写，出图后放大核对（各品牌的具体拼写见 brand.md）。
 - 写清道具状态（这段有没有某件道具、是哪个版本，例：P04 腰包只在 B、C 段、A 段是廉价薄叉）；对比道具一眼能分清。
 - 俯视角布局图不直接挂给首帧和视频（会带成俯拍），先用它出两个方向的场景图。
 - 标了字的动线图只给人看，不连任何生成节点。
 - 比例只用 1:1 / 9:16 / 16:9。
-- 「只改某处」的编辑生图（如只加重妆容）也会重画胸口 logo，常拼错（V02 R3 两候选都坏：Naturesbiunty / Naturessurant）。编辑后必放大核对 logo；坏了用 ffmpeg 把编辑前那张的 logo 区域羽化贴回（同构图、缩放到同尺寸），不必重出。
+- 「只改某处」的编辑生图（如只加重妆容）也会重画胸口 logo，常拼错（NRT V02 R3 两候选都坏）。编辑后必放大核对 logo；坏了用 ffmpeg 把编辑前那张的 logo 区域羽化贴回（同构图、缩放到同尺寸），不必重出。
 
-## 七、真实性（项目规则）
+## 六、真实性
 
-- AI 剧情段（一眼假的夸张）不算产品宣称；商品段只表现真实外观和正常用法，不做 AI 压弯对比、「永不断」之类的性能画面和字幕。
-- 规格、每箱数量、价格取自 `knowledge/06-官网商品目录.md` 或官网接口，价格发布前重核；配送时效不写。
+见 `references/platform-rules.md` 第二节（通用）和 `brands/<品牌>/brand.md` 的表达限制。规格、数量、价格只取品牌配置写明的来源，价格发布前重核；配送时效不写。

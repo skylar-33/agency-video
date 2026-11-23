@@ -61,7 +61,7 @@ def main():
     sync = "--sync-prompts" in sys.argv
     proj, st = load_project(d)
     if not proj.get("canvas_id"):
-        proj["canvas_id"] = Canvas.create("NRT · " + proj["name"])
+        proj["canvas_id"] = Canvas.create(proj.get("canvas_prefix", "NRT · ") + proj["name"])
         json.dump(proj, open(os.path.join(d, "project.json"), "w", encoding="utf-8"), indent=1, ensure_ascii=False)
         print("created canvas", proj["canvas_id"])
     cv = Canvas(proj["canvas_id"])
