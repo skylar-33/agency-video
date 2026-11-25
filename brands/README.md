@@ -6,6 +6,7 @@
 | --- | --- |
 | `nrt/` | Naturestaurant 餐饮包装（出海匠画布，抓马系列） |
 | `easybuy-xmas/` | EZ Easybuy Choice 4.5ft 植绒预装灯圣诞树（Brigo / EI 画布） |
+| `rotibox/` | Rotibox 蓝牙音乐毛线帽 灰色款（Brigo / EI 画布） |
 
 ## brand.md 模板
 

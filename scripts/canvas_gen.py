@@ -4,7 +4,7 @@
 - 已提交的任务记在 state.json，重跑只续查，不重复扣费；被拒/中断的请求可能已在服务端执行，先看节点上有没有 taskId。
 - 失败（超时等）的候选不在原节点重提（会拿回旧任务号），而是新建下一个编号的候选节点。
 - 完成后下载：图片到 参考图/，视频到 视频/；节点卡在 running 不挂素材时，按任务结果 attach_asset 补挂。
-- Seedance 2.5 并发上限 4，排队用 ≤3：视频一次最多提交 3 个候选。默认候选数：图片 1 个、视频 2 个（陈尚宇 2026-10-23 定）；首帧要 2 个时加 --n 2，--n 对本次所有 job 生效。
+- Seedance 2.5 并发上限 4，排队用 ≤3：视频一次最多提交 3 个候选。默认候选数：一律 1 个（图片、首帧、视频都是；2026-11-25 用户定，不再一次出 2–3 个）；确实要多出时加 --n N，--n 对本次所有 job 生效。
 """
 import json, os, sys, time, urllib.error, urllib.request
 
@@ -34,7 +34,7 @@ def main():
     def cands(j, payload):
         base = [f"gen_{j}"] + [f"gen_{j}_v{k}" for k in range(2, 30)]
         alive = [c for c in base if c not in failed]
-        n = n_arg or (2 if proj["jobs"][j]["kind"] == "video" else 1)
+        n = n_arg or 1
         return alive[:n]
 
     # 1. 补建候选节点（复制主节点草稿和连线，连线顺序不变）

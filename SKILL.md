@@ -46,7 +46,7 @@ description: 代运营视频 skill —— 给代运营客户做纯 AI 剧情 / �
    - 每段配乐（和光色）标「延续」或「转折」（第三节）；
    - 空间复杂时规划俯视布局、动线、机位编号。
 3. **参考图**（GPT-Image-2，每个 1 张，不出候选；不满意再单独重出）：角色三视图 → 道具 → 俯视图 → 两个方向的场景图。俯视图用 `plan_annotate.py` 标动线给用户看。某段不带的道具，从定稿图编辑出去掉道具的版本。产品外观一律挂真实产品图，不让 AI 自己编。
-4. **首帧**（每段 1 张，2 候选）：构图对得上俯视图；首帧定稿才生成视频。用户不满意直接出的视频时，先回到这一步。
+4. **首帧**（每段 1 张，1 个候选；不满意再单独重出）：构图对得上俯视图；首帧定稿才生成视频。用户不满意直接出的视频时，先回到这一步。
 5. **视频**（Seedance 2.5 官方版，全能参考，单段 4–30 秒；分辨率按品牌配置）：按 `prompt-rules.md` 第一节框架写；延续段挂上一段选定视频，转折段不挂；品牌台词按品牌配置的写法。审片（出海匠项目用 `review.py`，品牌词片段见品牌配置），逐条核对情节点、左右朝向、台词归属；漏掉的情节点单独补拍短段。
 6. **粗剪与交付**：写 `timeline.json`，`assemble.py` 出片（-14 LUFS）；去掉 AI 片段首尾自带黑帧；品牌要求的贴纸、优惠、落版文字后期加；粗剪上画布；分镜末尾写选用理由和已知问题；更新待办、工作记录；新教训：通用的写进 `references/`，只对某品牌成立的写进它的 `brand.md`。
 
@@ -75,7 +75,7 @@ assets/<编号>-<名>/
 ```bash
 S=<本 skill 所在目录>/scripts   # 例：.claude/skills/restaurant-drama/scripts、~/.agents/skills/agency-video/scripts
 python3 -I $S/canvas_setup.py assets/<项目> [--sync-prompts]   # 建/补画布节点，打印每段图片编号核对
-python3 -I $S/canvas_gen.py   assets/<项目> R1 R2                 # 默认参考图 1 张、视频 2 候选；首帧加 --n 2；一次最多 3 个视频候选
+python3 -I $S/canvas_gen.py   assets/<项目> R1 R2                 # 默认每个 job 1 个候选（图片、首帧、视频都一样）；确实要多出时加 --n N
 python3 -I $S/plan_annotate.py assets/<项目> [--grid]             # 俯视图坐标网格 / 动线标注
 python3    $S/review.py --brand <品牌词片段> assets/<项目>/视频/*.mp4   # 联系表 + 转写 + 品牌词单独转写（NRT 用 natur）
 python3 -I $S/assemble.py assets/<项目>/timeline.json             # 粗剪
